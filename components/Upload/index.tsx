@@ -3,7 +3,7 @@ import { useState, useRef, DragEvent } from "react";
 import { uploadFiles } from "@/utils/upload";
 
 export default function Upload() {
-  const [files, setFiles] = useState<File[]>([]);
+  const [files, setFiles] = useState<FormData[]>([]);
   const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -11,13 +11,16 @@ export default function Upload() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {    
     const targetFiles = e.target.files;
     if (targetFiles) {
+      const formDataArray = Array.from(targetFiles).map(file => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return formData;
+      });
       
       if (files.length > 0) {
-        setFiles((prevFiles) => {
-          return [...prevFiles, ...Array.from(targetFiles)];
-        });
+        setFiles((prevFiles) => [...prevFiles, ...formDataArray]);
       } else {
-        setFiles(Array.from(targetFiles));
+        setFiles(formDataArray);
       }
     }
   };
@@ -50,12 +53,15 @@ export default function Upload() {
     const droppedFiles = e.dataTransfer.files;
     if (droppedFiles && droppedFiles.length > 0) {
       // Filter for PDF files if needed
-      const pdfFiles = Array.from(droppedFiles).filter(file => 
-        file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
-      );
+      const pdfFiles = Array.from(droppedFiles)
+        .filter(file => file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))
+        .map(file => {
+          const formData = new FormData();
+          formData.append('file', file);
+          return formData;
+        });
       
       if (pdfFiles.length > 0) {
-        // Use the same logic as handleFileChange for consistency
         if (files.length > 0) {
           setFiles((prevFiles) => [...prevFiles, ...pdfFiles]);
         } else {
@@ -142,11 +148,14 @@ export default function Upload() {
             <div className="mt-4 w-full">
               <p className="text-sm font-medium text-gray-700">Selected files:</p>
               <ul className="mt-2 text-sm text-gray-600 max-h-[100px] overflow-y-auto">
-                {files.map((file, index) => (
-                  <li key={index} className="truncate">
-                    {file.name} ({(file.size / 1024).toFixed(1)} KB)
-                  </li>
-                ))}
+                {files.map((formData, index) => {
+                  const file = formData.get('file') as File;
+                  return (
+                    <li key={index} className="truncate">
+                      {file.name} ({(file.size / 1024).toFixed(1)} KB)
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
