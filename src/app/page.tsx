@@ -1,10 +1,9 @@
-import Upload from "@/components/Upload";
-import Query from "@/components/Query";
+import ClientWrapper from "./ClientWrapper";
+
 export default function Home() {
   return (
     <div>
-      <Upload />
-      <Query />
+      <ClientWrapper />
     </div>
   );
 }
