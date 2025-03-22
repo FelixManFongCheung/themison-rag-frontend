@@ -8,6 +8,23 @@ export default function Upload() {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('in now');
+    
+    
+    const targetFiles = e.target.files;
+    if (targetFiles) {
+      
+      if (files.length > 0) {
+        setFiles((prevFiles) => {
+          return [...prevFiles, ...Array.from(targetFiles)];
+        });
+      } else {
+        setFiles(Array.from(targetFiles));
+      }
+    }
+  };
+
   const handleDragEnter = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -98,6 +115,7 @@ export default function Upload() {
           <input
             ref={fileInputRef}
             className="hidden"
+            onChange={handleFileChange}
             type="file"
             accept=".pdf"
             multiple
