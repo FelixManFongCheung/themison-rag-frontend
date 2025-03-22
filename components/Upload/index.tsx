@@ -8,10 +8,7 @@ export default function Upload() {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('in now');
-    
-    
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {    
     const targetFiles = e.target.files;
     if (targetFiles) {
       
