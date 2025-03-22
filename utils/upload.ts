@@ -19,6 +19,9 @@ export async function uploadFiles(files: File[]) {
     
     const response = await fetch(`${backendUrl}documents/upload`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
       body: formData,
     });
 
