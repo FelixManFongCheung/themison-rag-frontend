@@ -102,7 +102,7 @@ export default function Upload() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex flex-1 flex-col items-center justify-center">
       <form className="flex flex-col items-center justify-center" onSubmit={handleSubmit}>
         <div
           className={`w-[500px] h-[300px] border-2 border-dashed rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors

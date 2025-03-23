@@ -72,7 +72,7 @@ export default function Chat() {
   };
 
   return (
-    <div className="flex flex-col h-[600px] max-w-full">
+    <div className="flex flex-1 flex-col max-w-full">
       <div className="flex-1 overflow-y-auto mb-4 space-y-4">
         {chatHistory.length === 0 ? (
           <div className="text-center text-gray-500 my-8">
