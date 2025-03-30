@@ -10,7 +10,7 @@ export default function Upload() {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {    
+  const handleFileUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {    
     const targetFiles = e.target.files;
     if (targetFiles) {
       const formDataArray = Array.from(targetFiles).map(file => {
@@ -97,35 +97,27 @@ export default function Upload() {
     }
   };
 
-  const openFileDialog = () => {
-    if (fileInputRef.current) {
+  const openFileDialog = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    if (fileInputRef.current) {      
       fileInputRef.current.click();
     }
   };
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
-      <form className="flex flex-col w-full items-center justify-center" onSubmit={handleSubmit}>
+      <form className="flex flex-col w-full items-center justify-center gap-2" onSubmit={handleSubmit}>
         <div
           className={`w-full h-[300px] border-2 border-dashed rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors
             ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
             ${state === "error" ? 'border-red-500' : ''}
             ${state === "success" ? 'border-green-500' : ''}`}
+          onClick={openFileDialog}
           onDragEnter={handleDragEnter}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
-          onClick={openFileDialog}
         >
-          <input
-            ref={fileInputRef}
-            className="hidden"
-            onChange={handleFileChange}
-            type="file"
-            accept=".pdf"
-            multiple
-          />
-          
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
             className="h-12 w-12 text-gray-400 mb-3" 
@@ -161,6 +153,14 @@ export default function Upload() {
               </ul>
             </div>
           )}
+          <input
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleFileUpdate}
+            type="file"
+            accept=".pdf"
+            multiple
+          />
         </div>
         
         <button 
