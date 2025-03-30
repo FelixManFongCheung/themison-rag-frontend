@@ -31,15 +31,13 @@ export default function ClientWrapper() {
       chatHistory, 
       addChatMessage, 
     }}>
-      <div className="container mx-auto p-4 h-[100vh]">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full">
-          {/* Upload section */}
+      <div className="mx-auto p-4 w-[100vw] h-[100vh]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full h-full">
           <div className="bg-white p-6 rounded-lg shadow-md flex flex-col">
             <h2 className="text-xl font-semibold mb-4">Upload Documents</h2>
             <Upload />
           </div>
           
-          {/* Chat section */}
           <div className="bg-white p-6 rounded-lg shadow-md flex flex-col">
             <h2 className="text-xl font-semibold mb-4">Ask Questions</h2>
             <Chat />

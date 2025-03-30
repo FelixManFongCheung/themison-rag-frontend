@@ -2,9 +2,11 @@
 import { useState, useRef, DragEvent } from "react";
 import { uploadFiles } from "@/utils/upload";
 
+type UploadStates = "idle" | "loading" | "success" | "error";
+
 export default function Upload() {
   const [files, setFiles] = useState<FormData[]>([]);
-  const [state, setState] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [state, setState] = useState<UploadStates>("idle");
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -103,9 +105,9 @@ export default function Upload() {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
-      <form className="flex flex-col items-center justify-center" onSubmit={handleSubmit}>
+      <form className="flex flex-col w-full items-center justify-center" onSubmit={handleSubmit}>
         <div
-          className={`w-[500px] h-[300px] border-2 border-dashed rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors
+          className={`w-full h-[300px] border-2 border-dashed rounded-md p-4 flex flex-col items-center justify-center cursor-pointer transition-colors
             ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:border-gray-400'}
             ${state === "error" ? 'border-red-500' : ''}
             ${state === "success" ? 'border-green-500' : ''}`}
