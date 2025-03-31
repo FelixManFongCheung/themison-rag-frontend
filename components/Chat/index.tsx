@@ -39,27 +39,44 @@ export default function Chat() {
         throw new Error(`Failed to fetch: ${response.status}`);
       }
       
-      // For FastAPI streaming responses
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('Response body is null');
-      }
-      
-      const decoder = new TextDecoder();
-      let fullMessage = '';
-      
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      // Check if the response is a streaming response
+      if (response.body) {
+        const reader = response.body.getReader();
+        console.log(reader, "reader");
         
-        // Decode the chunk
-        const text = decoder.decode(value, { stream: true });
-        fullMessage += text;
-        setCurrentAssistantMessage(fullMessage);
+        const decoder = new TextDecoder();
+        let fullMessage = '';
+        
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            
+            // Handle potential JSON line-delimited format often used by FastAPI
+            const chunk = decoder.decode(value, { stream: true });
+            
+            // Some APIs return JSON objects for each chunk
+            try {
+              // Try parsing as JSON
+              const parsedChunk = JSON.parse(chunk);
+              const text = parsedChunk.text || parsedChunk.content || parsedChunk.chunk || chunk;
+              fullMessage += text;
+            } catch (e) {
+              console.log(e, "message not in JSON");
+              // If not JSON, use the raw text
+              fullMessage += chunk;
+            }
+            
+            setCurrentAssistantMessage(fullMessage);
+          }
+        } catch (streamError) {
+          console.error('Stream reading error:', streamError);
+          throw streamError;
+        }
+        
+        addChatMessage({ role: 'assistant', content: fullMessage });
+        setCurrentAssistantMessage('');
       }
-      
-      addChatMessage({ role: 'assistant', content: fullMessage });
-      setCurrentAssistantMessage('');
     } catch (error) {
       console.error('Error:', error);
       addChatMessage({ 
@@ -73,7 +90,7 @@ export default function Chat() {
 
   return (
     <div className="flex flex-1 flex-col max-w-full">
-      <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+      <div className="flex-1 overflow-y-auto md:overflow-y-scroll md:max-h-[calc(100vh-150px)] mb-4 space-y-4">
         {chatHistory.length === 0 ? (
           <div className="text-center text-gray-500 my-8">
           </div>
