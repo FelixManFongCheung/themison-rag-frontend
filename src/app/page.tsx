@@ -1,4 +1,4 @@
-import ClientWrapper from "./ClientWrapper";
+import ClientWrapper from "@/src/context/ChatContext";
 
 export default function Home() {
   return (

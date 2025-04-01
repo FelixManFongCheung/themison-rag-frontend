@@ -1,7 +1,7 @@
 // components/Chat/index.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { useAppState } from "@/src/app/ClientWrapper";
+import { useAppState } from "@/src/context/ChatContext";
 
 export default function Chat() {
   const { chatHistory, addChatMessage } = useAppState();
